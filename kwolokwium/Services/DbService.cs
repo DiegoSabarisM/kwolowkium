@@ -1,5 +1,5 @@
-using kolokwium.Models.DTOs;
-using kwolokwium.Controllers;
+
+using kwolokwium.Controllers.DTOs;
 using kwolokwium.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,40 +14,58 @@ public class DbService : IDbService
     {
         _context = context;
     }
-    
-    public async Task<IEnumerable<SomeKindOfAlbum>> GetAlbum(int idAlbum)
+
+
+    public async Task<someKIndofTeam?> GetTeam(int idTeam)
     {
-        return await _context.Albums.Where(a => a.IdAlbum == idAlbum)
-            .Select(a => new SomeKindOfAlbum
-            {
-                idAlbum = a.IdAlbum,
-                AlbumName = a.AlbumName,
-                PublishDate = a.PublishDate,
-                MusicLabel= new MusicLabel {
-                    IdMusicLabel = a.MusicLabel.IdMusicLabel,
-                    Name = a.MusicLabel.Name
-                },
-                Tracks= a.Tracks.Select(t => new SomeKindOfTrack()
+        return await _context.Teams.Where(t => t.TeamID == idTeam).Select(t => new someKIndofTeam()
+        {
+            TeamID = t.TeamID,
+            TeamName = t.TeamName,
+            TeamDescription = t.TeamDescription,
+            Organization = _context.Organizations.Where(o => o.OrganizationID == t.OrganizaionID)
+                .Select(o => new someKindofOrganization()
                 {
-                    IdTrack = t.IdTrack,
-                    TrackName = t.TrackName,
-                    Duration = t.Duration,
-                    IdMusicAlbum = t.IdMusicAlbum
-                   
-                })
-            }).OrderBy(a => a.PublishDate).ToListAsync();
+                    OrganizationName = o.OrganizationName,
+                    OrganizationID = o.OrganizationID,
+                    Members = _context.Members.Select(m => new someKindofMember()
+                    {
+                        MemberID = m.MemberID,
+                        MemberName = m.MemberName
+                    }).ToList()
+
+
+                }).FirstOrDefault(),
+            Memberships = _context.Memberships.Select(m => new someKindofMembership()
+            {
+                MembershipDate = m.MembershipDate
+            }).OrderBy(m => m.MembershipDate).ToList()
+        }).FirstOrDefaultAsync();
+        
     }
 
-    public bool DeleteMusician(int idMusician)
+    public async Task<bool> addMember(someKindofMember member)
     {
-        
-        var Musician = _context.Musicians.Where(m => m.IdMusician == idMusician).FirstOrDefault();
-        _context.Attach(Musician);
-        _context.Remove(Musician);
-        
-        return true;
+
+        {
+            var _member = new Member()
+            {
+                MemberID = member.MemberID,
+                OrganizaionID = member.OrganizaionID,
+                MemberSurname = member.MemberSurname,
+                MemberName = member.MemberName
+            };
+            var membership = _context.Memberships.Where(m => m.MemberID == _member.MemberID).FirstOrDefault();
+            var team = _context.Teams.Where(t => t.TeamID == membership.TeamID).FirstOrDefault();
+            var organization = _context.Organizations.Where(t => t.OrganizationID == _member.MemberID).FirstOrDefault();
+            if (organization.OrganizationID == team.OrganizaionID)
+            {
+                _context.Add(member);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+
+            return false;
+        }
     }
-
-   
-
 }

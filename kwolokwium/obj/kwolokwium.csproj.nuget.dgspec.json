@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/samurai/RiderProjects/kwolokwium/kwolokwium/kwolokwium.csproj": {}
+    "/home/samurai/Downloads/6th semestr/ASDP/kwolokwium/kwolokwium/kwolokwium.csproj": {}
   },
   "projects": {
-    "/home/samurai/RiderProjects/kwolokwium/kwolokwium/kwolokwium.csproj": {
+    "/home/samurai/Downloads/6th semestr/ASDP/kwolokwium/kwolokwium/kwolokwium.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/samurai/RiderProjects/kwolokwium/kwolokwium/kwolokwium.csproj",
+        "projectUniqueName": "/home/samurai/Downloads/6th semestr/ASDP/kwolokwium/kwolokwium/kwolokwium.csproj",
         "projectName": "kwolokwium",
-        "projectPath": "/home/samurai/RiderProjects/kwolokwium/kwolokwium/kwolokwium.csproj",
+        "projectPath": "/home/samurai/Downloads/6th semestr/ASDP/kwolokwium/kwolokwium/kwolokwium.csproj",
         "packagesPath": "/home/samurai/.nuget/packages/",
-        "outputPath": "/home/samurai/RiderProjects/kwolokwium/kwolokwium/obj/",
+        "outputPath": "/home/samurai/Downloads/6th semestr/ASDP/kwolokwium/kwolokwium/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/samurai/.nuget/NuGet/NuGet.Config"
@@ -44,17 +44,17 @@
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[5.0.0, )"
+              "version": "[6.0.0, )"
             },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
-              "version": "[5.0.0, )"
+              "version": "[6.0.0, )"
             },
             "Microsoft.EntityFrameworkCore.Tools": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[5.0.0, )"
+              "version": "[6.0.0, )"
             }
           },
           "imports": [

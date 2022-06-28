@@ -1,12 +1,5 @@
-
-using kwolokwium.Models;
 using kwolokwium.Services;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 namespace kwolokwium.Models
 {
@@ -35,11 +28,8 @@ namespace kwolokwium.Models
             if (env.IsDevelopment()) app.UseDeveloperExceptionPage();
 
             app.UseRouting();
-
             app.UseAuthentication();
             app.UseAuthorization();
-
-
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }

@@ -1,4 +1,3 @@
-using kwolokwium.Controllers;
 using Microsoft.EntityFrameworkCore;
 
 namespace kwolokwium.Models;
@@ -10,111 +9,127 @@ public class MainDbContext : DbContext
     {
     }
 
-//dotnet ef migrations add migracja
-//dotnet database update
     protected MainDbContext()
     {
         
     }
     
-  public DbSet<Album> Albums { get; set; }
-    public DbSet<Musician> Musicians { get; set; }
-    public DbSet<Musician_Track> MusicianTracks { get; set; }
-    public DbSet<MusicLabel> MusicLabels { get; set; }
-    public DbSet<Track> Tracks { get; set; }
+    public DbSet<Member> Members { get; set; }
+    public DbSet<Membership> Memberships { get; set; }
+    public DbSet<Team> Teams { get; set; }
+    public DbSet<Organization> Organizations { get; set; }
+    public DbSet<File> Files { get; set; }
    
        protected override void OnModelCreating(ModelBuilder modelBuilder)
        {
            base.OnModelCreating(modelBuilder);
    
-           modelBuilder.Entity<Musician>(m =>
+        
+           modelBuilder.Entity<Member>(m =>
            {
-               m.HasKey(m => m.IdMusician);
-               m.Property(m => m.FirstName).IsRequired().HasMaxLength(30);
-               m.Property(m => m.LastName).IsRequired().HasMaxLength(50);
-               m.Property(m => m.Nickname).HasMaxLength(20);
+               m.HasKey(m => m.MemberID);
+               m.HasOne(m => m.Organization).WithMany(o => o.Members).HasForeignKey(m => m.OrganizaionID).OnDelete(DeleteBehavior.NoAction);;
+               m.Property(m => m.MemberName).IsRequired().HasMaxLength(20);
+               m.Property(m => m.MemberSurname).IsRequired().HasMaxLength(50);
+               m.Property(m => m.MemberNickname).HasMaxLength(20);
 
                m.HasData(
-                   new Musician
+                   new Member()
                    {
-                       IdMusician = 11,
-                       FirstName = "Nestor",
-                       LastName = "En bloque"
+                       MemberID = 11,
+                       OrganizaionID = 20,
+                       MemberName = "Nestor",
+                       MemberSurname = "En bloque"
                    });
+               
+              
            });
           
-          modelBuilder.Entity<Musician_Track>(t =>
-          {
-              
-              t.HasKey(t => new
-                     {
-                         t.IdTrack,
-                         t.IdMusician
-                     });
-              
-                     t.HasOne(t => t.Musician).WithMany(m => m.MusicianTracks).HasForeignKey(m => m.IdMusician);
-                     t.HasOne(t => t.Track).WithMany(m => m.MusicianTracks).HasForeignKey(m => m.IdTrack);
-         
-                     t.HasData(new Musician_Track()
-                     {
-                         IdTrack = 666,
-                         IdMusician = 11,
-                     });
-          });
-          
-          
-     
-         
-           
-                 modelBuilder.Entity<Track>(t =>
-                 {
-                     t.HasKey(t => t.IdTrack);
-                     t.Property(t => t.TrackName).IsRequired().HasMaxLength(20);
-                     t.Property(t => t.Duration).IsRequired();
-                     t.HasOne(t => t.Album).WithMany(a => a.Tracks).HasForeignKey(t => t.IdMusicAlbum);
-
-                     t.HasData(new Track()
-                     {
-                         
-                     IdTrack = 666,
-                     TrackName = "The beast",
-                     Duration = 300f,
-                     IdMusicAlbum = 333
+            modelBuilder.Entity<Membership>(m =>
+             {
+                 
+                 m.HasKey(m => new
+                        {
+                            m.MemberID,
+                            m.TeamID
+                        });
+                 
+                        m.HasOne(m => m.Member).WithMany(m => m.Memberships).HasForeignKey(m => m.MemberID).OnDelete(DeleteBehavior.NoAction);;
+                        m.HasOne(m => m.Team).WithMany(t => t.Memberships).HasForeignKey(m => m.TeamID).OnDelete(DeleteBehavior.NoAction);
+                        m.Property(m => m.MembershipDate).IsRequired();
+                        
+                        m.HasData(new Membership()
+                        {
+                            MemberID = 11,
+                            TeamID = 22,
+                            MembershipDate = DateTime.Parse("2022-03-21")
+                        });
                      
-                     });
-                                      
-                 });
+             });
+             
+                modelBuilder.Entity<Team>(t =>
+                  {
+                      t.HasKey(t => t.TeamID);
+                      t.HasOne(t => t.Organization).WithMany(o => o.Teams).HasForeignKey(t => t.OrganizaionID).OnDelete(DeleteBehavior.NoAction);;
+                      t.Property(t => t.TeamName).IsRequired().HasMaxLength(50);
+                      t.Property(t => t.TeamDescription).HasMaxLength(500);
+ 
+                      t.HasData(new Team()
+                      {
+ 
+                          TeamID = 22,
+                          OrganizaionID = 20,
+                          TeamName = "losblocks",
+
+                      });
+ 
+                      
+        });
                 
-                    modelBuilder.Entity<Album>(a =>
+                 
+                    modelBuilder.Entity<Organization>(o =>
                     {
-                        a.HasKey(a => a.IdAlbum);
-                        a.Property(a => a.AlbumName).IsRequired().HasMaxLength(30);
-                        a.Property(a => a.PublishDate).IsRequired();
-                        a.HasOne(a => a.MusicLabel).WithMany(a => a.Albums).HasForeignKey(a => a.IdMusicLabel);
+                        o.HasKey(o => o.OrganizationID);
+                        o.Property(o => o.OrganizationName).IsRequired().HasMaxLength(100);
+                        o.Property(o => o.OrganizationDomain).IsRequired().HasMaxLength(50);
+                  
 
             
-                        a.HasData(new Album
+                        o.HasData(new Organization()
                         {
-                            IdAlbum = 333,
-                            AlbumName = "Cumbias y HeavyMetal",
-                            PublishDate = DateTime.Parse("2022-03-21"),
-                            IdMusicLabel = 99
+                            OrganizationID = 20,
+                            OrganizationName = "ffff",
+                            OrganizationDomain = "IT"
+                          
                         });
                     }); 
                     
-                    modelBuilder.Entity<MusicLabel>(m =>
-                    {
-                        m.HasKey(m => m.IdMusicLabel);
-                        m.Property(m => m.Name).IsRequired().HasMaxLength(50);
+                    
+                   modelBuilder.Entity<File>(f =>
+                   {
+                       f.HasKey(f => new
+                       {
+                           f.FileID,
+                           f.TeamID
+                       });
+                       f.HasOne(f => f.Team).WithMany(t => t.Files).HasForeignKey(f => f.TeamID).OnDelete(DeleteBehavior.NoAction);;
+                       f.Property(f => f.FileName).IsRequired().HasMaxLength(100);
+                       f.Property(f => f.FileExtension).IsRequired().HasMaxLength(4);
+                       f.Property(f => f.FileName).IsRequired();
                      
-                        m.HasData(
-                            new MusicLabel
-                            {
-                                IdMusicLabel = 99,
-                                Name = "UFO"
-                             
-                            });
-                    });
+                       
+                       f.HasData(
+                           new File()
+                           {
+                               FileID = 99,
+                               TeamID = 22,
+                               FileName = "ufos-attack",
+                               FileExtension = "txt",
+                               FileSize = 3000
+                               
+                           });
+                   });
 
                 }
+                
 }
